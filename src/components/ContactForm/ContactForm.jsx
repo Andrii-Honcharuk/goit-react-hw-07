@@ -6,7 +6,8 @@ import * as Yup from "yup";
 
 import style from "./ContactForm.module.css";
 import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contactsSlice";
+import { addContact } from "../../redux/contactsOps";
+import toast from "react-hot-toast";
 
 const ContactSchema = Yup.object().shape({
   name: Yup.string()
@@ -22,6 +23,17 @@ const ContactSchema = Yup.object().shape({
 
 export default function ContactForm() {
   const dispatch = useDispatch();
+  const handleSubmit = (values, actions) => {
+    dispatch(addContact({ name: values.name, number: values.number }))
+      .unwrap()
+      .then(() => {
+        toast.success("Contact saved");
+      })
+      .catch(() => {
+        toast.success("Error, please reload page");
+      });
+    actions.resetForm();
+  };
 
   const contactNameId = nanoid();
   const contactNumberId = nanoid();
@@ -29,21 +41,11 @@ export default function ContactForm() {
   return (
     <Formik
       initialValues={{
-        // id: nanoid(),
         name: "",
         number: "",
       }}
       validationSchema={ContactSchema}
-      onSubmit={(values, actions) => {
-        dispatch(
-          addContact({
-            id: nanoid(),
-            name: values.name,
-            number: values.number,
-          })
-        );
-        actions.resetForm();
-      }}
+      onSubmit={handleSubmit}
     >
       <Form className={style.form}>
         <label htmlFor={contactNameId}>Name</label>

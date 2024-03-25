@@ -1,13 +1,13 @@
 //Contact.jsx;
 
 import { useDispatch } from "react-redux";
+import { deleteContact } from "../../redux/contactsOps";
 import style from "./Contact.module.css";
 import { HiMiniPhone, HiMiniUser } from "react-icons/hi2";
-import { deleteContact } from "../../redux/contactsSlice";
 
 export default function Contact({ data: { id, name, number } }) {
   const dispatch = useDispatch();
-  const handleDelete = () => dispatch(deleteContact(id));
+  const handleDelete = (value) => dispatch(deleteContact(value));
 
   return (
     <div className={style.container}>
@@ -21,7 +21,7 @@ export default function Contact({ data: { id, name, number } }) {
           <HiMiniPhone /> {number}
         </p>
       </div>
-      <button className={style.btn} onClick={handleDelete}>
+      <button className={style.btn} onClick={() => handleDelete(id)}>
         Delete
       </button>
     </div>
